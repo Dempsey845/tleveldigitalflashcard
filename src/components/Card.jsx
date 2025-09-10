@@ -1,11 +1,43 @@
-import { useState } from "react";
+import { useEffect, useRef } from "react";
+import "./Card.css";
 
-export default function Card({ question, answer }) {
-  const [flipped, setFlipped] = useState(false);
+export default function Card({
+  question,
+  answer,
+  flipped,
+  setFlipped,
+  moveToNextQuestion,
+  setMoveToNextQuestion,
+  nextQuestion,
+}) {
+  const cardRef = useRef(null);
+
+  useEffect(() => {
+    if (moveToNextQuestion && cardRef.current) {
+      cardRef.current.classList.add("move-up");
+
+      const timeout = setTimeout(() => {
+        cardRef.current.classList.remove("flipped");
+        cardRef.current.classList.remove("move-up");
+
+        cardRef.current.classList.add("move-down");
+
+        nextQuestion();
+
+        setTimeout(() => {
+          cardRef.current.classList.remove("move-down");
+          setMoveToNextQuestion(false);
+        }, 500);
+      }, 500);
+
+      return () => clearTimeout(timeout);
+    }
+  }, [moveToNextQuestion]);
 
   return (
     <div
-      className={`card ${flipped ? "flipped" : ""}`}
+      ref={cardRef}
+      className={`card cwidth ${flipped ? "flipped" : ""}`}
       onClick={() => setFlipped(!flipped)}
     >
       <div className="card-inner">
