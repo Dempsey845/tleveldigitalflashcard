@@ -4,4 +4,28 @@
   h1 {
     @apply text-4xl font-semibold;
   }
+
+  .card {
+    @apply perspective-[1000px] w-[300px] sm:w-[400px] md:w-[500px] lg:w-[600px] aspect-video cursor-pointer;
+  }
+
+  .card-inner {
+    @apply relative w-full h-full transition-transform duration-700 [transform-style:preserve-3d];
+  }
+
+  .card.flipped .card-inner {
+    @apply rotate-y-180;
+  }
+
+  .card-face {
+    @apply absolute inset-0 flex items-center justify-center text-center border-4 border-amber-600 backface-hidden select-none;
+  }
+
+  .card-front {
+    @apply bg-white;
+  }
+
+  .card-back {
+    @apply bg-amber-100 [transform:rotateY(180deg)];
+  }
 }
