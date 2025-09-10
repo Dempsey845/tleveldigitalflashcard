@@ -49,7 +49,7 @@ export default function CardContainer({
       />
 
       <div
-        className={`buttons transition-opacity duration-300 ${
+        className={`buttons flex items-center justify-center transition-opacity duration-300 ${
           flipped ? "opacity-100" : "opacity-0"
         }`}
       >
@@ -58,12 +58,16 @@ export default function CardContainer({
             setMoveToNextQuestion(true);
             setFlipped(false);
           }}
-          className="btn btn-correct"
+          className="btn btn-correct flex-shrink-0"
         >
           Correct
         </button>
-        <p className="mx-2 select-none">Was your answer correct?</p>
-        <button className="btn btn-incorrect">Incorrect</button>
+
+        <p className="mx-2 select-none flex-shrink text-center">
+          Was your answer correct?
+        </p>
+
+        <button className="btn btn-incorrect flex-shrink-0">Incorrect</button>
       </div>
 
       <button
