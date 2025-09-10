@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Card from "./Card";
 
 export default function CardContainer({
@@ -7,12 +7,37 @@ export default function CardContainer({
   answers,
   answer,
   nextQuestion,
+  playing,
+  setPlaying,
 }) {
   const [flipped, setFlipped] = useState(false);
   const [moveToNextQuestion, setMoveToNextQuestion] = useState(false);
+  const [mounted, setMounted] = useState(false);
+  const [animateIn, setAnimateIn] = useState(false);
+
+  useEffect(() => {
+    if (playing) {
+      setMounted(true);
+      // allow a tick for the element to mount before animating in
+      const tick = setTimeout(() => setAnimateIn(true), 10);
+      return () => clearTimeout(tick);
+    } else {
+      setAnimateIn(false);
+      const timeout = setTimeout(() => setMounted(false), 500);
+      return () => clearTimeout(timeout);
+    }
+  }, [playing]);
+
+  if (!mounted) return null;
 
   return (
-    <div className="flex flex-col gap-5 items-center justify-center m-3">
+    <div
+      className={`flex flex-col gap-5 items-center justify-center m-3
+        transition-all duration-500
+        ${
+          animateIn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+        }`}
+    >
       <Card
         question={questions[question]}
         answer={answers[answer]}
@@ -23,7 +48,11 @@ export default function CardContainer({
         nextQuestion={nextQuestion}
       />
 
-      <div className={`buttons ${flipped ? "visible" : ""}`}>
+      <div
+        className={`buttons transition-opacity duration-300 ${
+          flipped ? "opacity-100" : "opacity-0"
+        }`}
+      >
         <button
           onClick={() => {
             setMoveToNextQuestion(true);
@@ -36,6 +65,13 @@ export default function CardContainer({
         <p className="mx-2 select-none">Was your answer correct?</p>
         <button className="btn btn-incorrect">Incorrect</button>
       </div>
+
+      <button
+        onClick={() => setPlaying(false)}
+        className="btn btn-incorrect my-10"
+      >
+        Stop
+      </button>
     </div>
   );
 }

@@ -3,12 +3,70 @@
     {
       "question": "What is the word for when you can't break down the problem any further?",
       "answer": "Atomic"
+    },
+    {
+      "question": "What technique involves breaking a problem into smaller sub-problems?",
+      "answer": "Divide and Conquer"
+    },
+    {
+      "question": "What is it called when you systematically explore all possible solutions?",
+      "answer": "Exhaustive Search"
     }
   ],
   "Programming": [
     {
       "question": "What does IDE stand for?",
-      "answer": "Integrated Development Enviroment"
+      "answer": "Integrated Development Environment"
+    },
+    {
+      "question": "Which language is primarily used for web development with React?",
+      "answer": "JavaScript"
+    },
+    {
+      "question": "What does 'OOP' stand for in programming?",
+      "answer": "Object-Oriented Programming"
+    }
+  ],
+  "Mathematics": [
+    {
+      "question": "What is the value of Pi up to 2 decimal places?",
+      "answer": "3.14"
+    },
+    {
+      "question": "What is the derivative of x^2?",
+      "answer": "2x"
+    },
+    {
+      "question": "What is the solution of 2x + 3 = 7?",
+      "answer": "2"
+    }
+  ],
+  "Science": [
+    {
+      "question": "What is the chemical symbol for water?",
+      "answer": "H2O"
+    },
+    {
+      "question": "Who proposed the theory of relativity?",
+      "answer": "Albert Einstein"
+    },
+    {
+      "question": "What planet is known as the Red Planet?",
+      "answer": "Mars"
+    }
+  ],
+  "History": [
+    {
+      "question": "Who was the first President of the United States?",
+      "answer": "George Washington"
+    },
+    {
+      "question": "In which year did World War II end?",
+      "answer": "1945"
+    },
+    {
+      "question": "What ancient civilization built the pyramids?",
+      "answer": "Egyptians"
     }
   ]
 }

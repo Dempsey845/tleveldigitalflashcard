@@ -4,25 +4,12 @@ import CardContainer from "./components/CardContainer";
 import subjectData from "./subjects.json";
 import SubjectSelection from "./components/SubjectSelection";
 
-const _questions = [
-  "What is the word for when you can't break down the problem any further?",
-  "What does IDE stand for?",
-];
-const _answers = ["Atomic", "Integrated Development Enviroment"];
-
 function App() {
+  const [playing, setPlaying] = useState(false);
+
   // CardContainer
   const [question, setQuestion] = useState(0);
   const [answer, setAnswer] = useState(0);
-
-  const nextQuestion = () => {
-    const nextQuestionIndex =
-      question == _questions.length - 1 ? 0 : question + 1;
-    const nextAnswerIndex = answer == _answers.length - 1 ? 0 : answer + 1;
-
-    setQuestion(nextQuestionIndex);
-    setAnswer(nextAnswerIndex);
-  };
 
   // SubjectSelection
   const [selectedQuestions, setSelectedQuestions] = useState([]);
@@ -34,27 +21,59 @@ function App() {
       return {
         subject: subject,
         selected: true,
-        answer: subjectData[subject][0].answer,
-        question: subjectData[subject][0].question,
+        values: subjectData[subject],
       };
     })
   );
 
   useEffect(() => {
     const selectedSubjects = subjects.filter((subject) => subject.selected);
-    setSelectedQuestions(selectedSubjects.map((item) => item.question));
-    setSelectedAnswers(selectedSubjects.map((item) => item.answer));
+
+    const questions = selectedSubjects.flatMap((subject) =>
+      subject.values.map((item) => item.question)
+    );
+
+    const answers = selectedSubjects.flatMap((subject) =>
+      subject.values.map((item) => item.answer)
+    );
+
+    setSelectedQuestions(questions);
+    setSelectedAnswers(answers);
   }, [subjects]);
+
+  const nextQuestion = () => {
+    setSelectedQuestions((prev) => {
+      const newQuestions = prev.filter((_, i) => i !== question);
+      if (newQuestions.length <= 0) setPlaying(false);
+      return newQuestions;
+    });
+    setSelectedAnswers((prev) => prev.filter((_, i) => i != answer));
+
+    const nextQuestionIndex =
+      question == selectedQuestions.length - 1 ? 0 : question + 1;
+    const nextAnswerIndex =
+      answer == selectedAnswers.length - 1 ? 0 : answer + 1;
+
+    setQuestion(nextQuestionIndex);
+    setAnswer(nextAnswerIndex);
+  };
 
   return (
     <>
-      <SubjectSelection subjects={subjects} setSubjects={setSubjects} />
+      <SubjectSelection
+        subjects={subjects}
+        setSubjects={setSubjects}
+        playing={playing}
+        setPlaying={setPlaying}
+      />
       <CardContainer
         questions={selectedQuestions}
         question={question}
         answers={selectedAnswers}
         answer={answer}
         nextQuestion={nextQuestion}
+        playing={playing}
+        setPlaying={setPlaying}
       />
     </>
   );
