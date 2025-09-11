@@ -21,6 +21,14 @@
     @apply bg-red-500 hover:bg-red-600;
   }
 
+  .btn-google {
+    @apply bg-blue-500 hover:bg-blue-600;
+  }
+
+  .btn-google-outlined {
+    @apply bg-white text-blue-500 border border-blue-500 hover:bg-blue-50;
+  }
+
   .buttons {
     @apply flex justify-between items-center w-full max-w-[500px] opacity-0 scale-90 transition-all duration-500;
   }

@@ -56,13 +56,10 @@ export default function GoogleAuth({ useRedirect = false }) {
 
   return (
     <div className="flex gap-2">
-      <button
-        onClick={doSignIn}
-        className="px-4 py-2 rounded bg-slate-700 text-white"
-      >
+      <button onClick={doSignIn} className="btn btn-google">
         Sign in with Google
       </button>
-      <button onClick={doSignOut} className="px-3 py-2 rounded border">
+      <button onClick={doSignOut} className="btn btn-google-outlined">
         Sign out
       </button>
     </div>
