@@ -1,18 +1,36 @@
+@import url("https://fonts.googleapis.com/css2?family=Fredoka:wght@300..700&display=swap");
 @import "tailwindcss";
 
 @layer base {
-  h1 {
-    @apply text-4xl font-semibold;
+  /* Body */
+  body {
+    background-color: #4677f2;
+    background-image: url("https://www.transparenttextures.com/patterns/cubes.png");
+    background-repeat: repeat;
+    background-size: auto;
+    background-position: top left;
+    min-height: 100vh;
+    font-family: "Fredoka", sans-serif;
+    margin: 0;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 2rem;
+    color: #fff;
   }
 
+  /* Container width utility */
   .cwidth {
-    @apply w-[300px] sm:w-[400px] md:w-[500px] lg:w-[600px];
+    @apply w-[300px] sm:w-[400px] md:w-[500px] lg:w-[600px] mx-auto;
   }
 
+  /* Buttons base */
   .btn {
-    @apply px-4 py-2 rounded-md font-semibold text-white cursor-pointer transition-colors duration-300 select-none;
+    @apply px-4 py-2 rounded-full font-semibold text-white cursor-pointer transition-all duration-300 select-none shadow-md;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
   }
 
+  /* Button variants */
   .btn-correct {
     @apply bg-green-500 hover:bg-green-600;
   }
@@ -29,6 +47,7 @@
     @apply bg-white text-blue-500 border border-blue-500 hover:bg-blue-50;
   }
 
+  /* Buttons container */
   .buttons {
     @apply flex justify-between items-center w-full max-w-[500px] opacity-0 scale-90 transition-all duration-500;
   }

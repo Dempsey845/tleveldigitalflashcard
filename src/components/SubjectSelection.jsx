@@ -1,66 +1,57 @@
 import { useEffect, useState } from "react";
+import PlayButton from "./PlayButton";
 import "./SubjectSelection.css";
 
 export default function SubjectSelection({
   subjects,
   setSubjects,
-  playing,
-  setPlaying,
-  startGame,
+  gameIsStarting,
+  setHasSelection,
 }) {
-  const [showPlayButton, setShowPlayButton] = useState(false);
+  const [showContainer, setShowContainer] = useState(true);
   const [fadeIn, setFadeIn] = useState(false);
 
+  setHasSelection(subjects.some((s) => s.selected));
+
+  // Animate container when game starts / ends
   useEffect(() => {
-    let timeout;
-    if (!playing) {
-      timeout = setTimeout(() => {
-        setShowPlayButton(true);
-        setTimeout(() => setFadeIn(true), 10);
-      }, 500);
+    if (!gameIsStarting) {
+      setShowContainer(true);
+      setFadeIn(false);
+      setTimeout(() => setFadeIn(true), 10);
     } else {
       setFadeIn(false);
-      setShowPlayButton(false);
+      setTimeout(() => setShowContainer(false), 500);
     }
+  }, [gameIsStarting]);
 
-    return () => clearTimeout(timeout);
-  }, [playing]);
+  if (!showContainer) return null;
 
   return (
-    <div className="subject-selection-container relative">
+    <div
+      className={`subject-selection-container transition-all duration-500 ease-in-out transform origin-top ${
+        fadeIn ? "opacity-100 scale-100" : "opacity-0 scale-95"
+      }`}
+    >
       <h2 className="subject-selection-title">Select Your Subjects</h2>
       <div className="subject-list">
         {subjects.map((subject, index) => (
           <button
-            disabled={playing}
+            disabled={gameIsStarting}
             className={`subject ${subject.selected ? "subject-selected" : ""}`}
-            onClick={() => {
+            onClick={() =>
               setSubjects((prev) =>
                 prev.map((s, i) =>
                   i === index ? { ...s, selected: !s.selected } : s
                 )
-              );
-            }}
+              )
+            }
             key={subject.subject}
           >
             {subject.subject}
           </button>
         ))}
       </div>
-
-      {showPlayButton && (
-        <button
-          onClick={() => {
-            startGame();
-            setPlaying(true);
-          }}
-          className={`btn btn-correct my-10 transition-opacity duration-500 ${
-            fadeIn ? "opacity-100" : "opacity-0"
-          }`}
-        >
-          Play
-        </button>
-      )}
     </div>
   );
 }

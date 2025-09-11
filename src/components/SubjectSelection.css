@@ -1,26 +1,31 @@
 @import "tailwindcss";
 
 @layer base {
+  /* Container */
   .subject-selection-container {
-    @apply flex flex-col items-center justify-center px-4 py-6 gap-2;
+    @apply flex flex-col items-center justify-center px-4 py-6 gap-4 bg-white/20 rounded-xl shadow-lg backdrop-blur-md;
   }
 
+  /* Title */
   .subject-selection-title {
-    @apply text-2xl font-semibold mb-4 text-center;
+    @apply text-2xl font-bold mb-4 text-center text-blue-700;
   }
 
+  /* Subject list */
   .subject-list {
     @apply flex flex-wrap justify-center gap-4 w-full max-w-xl;
   }
 
+  /* Individual subject button */
   .subject {
-    @apply cursor-pointer px-4 py-2 rounded-md border border-gray-300 transition-all duration-200;
-    @apply text-black hover:text-green-500 hover:border-green-500;
-    @apply text-center;
-    @apply disabled:cursor-not-allowed;
+    @apply cursor-pointer px-5 py-2 rounded-full border font-semibold text-center select-none;
+    @apply bg-white text-blue-500 border-blue-500 transition-all duration-300 ease-in-out;
+    @apply disabled:cursor-not-allowed disabled:opacity-50;
+    @apply hover:shadow-lg;
   }
 
+  /* Selected state */
   .subject-selected {
-    @apply text-green-500 border-green-500 bg-green-100;
+    @apply bg-blue-500 text-white border-blue-600 shadow-md transition-all duration-300 ease-in-out;
   }
 }

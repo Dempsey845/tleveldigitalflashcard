@@ -61,6 +61,12 @@ export default function CardContainer({
           animateIn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
         }`}
     >
+      <button
+        onClick={() => setPlaying(false)}
+        className="btn btn-incorrect my-2"
+      >
+        Stop
+      </button>
       <Card
         question={currentCard.question}
         answer={currentCard.answer}
@@ -100,13 +106,6 @@ export default function CardContainer({
           Incorrect
         </button>
       </div>
-
-      <button
-        onClick={() => setPlaying(false)}
-        className="btn btn-incorrect my-10"
-      >
-        Stop
-      </button>
     </div>
   );
 }
