@@ -108,19 +108,18 @@ export function useCards(userId) {
     });
   };
 
-  // Mark current card as incorrect
-  const handleIncorrect = async () => {
+  // Mark a card as incorrect
+  const handleIncorrect = async (card = selectedCards[currentIndex]) => {
     if (!selectedCards.length || !userId) return;
 
-    const currentCard = selectedCards[currentIndex];
-    await markCardIncorrect(userId, currentCard.id);
+    await markCardIncorrect(userId, card.id);
 
-    setIncorrectCardIds((prev) => [...prev, currentCard.id]);
+    setIncorrectCardIds((prev) => [...prev, card.id]);
 
     // Update locally
     setSelectedCards((prev) =>
       prev.map((card) =>
-        card.id === currentCard.id ? { ...card, incorrect: true } : card
+        card.id === card.id ? { ...card, incorrect: true } : card
       )
     );
   };

@@ -18,6 +18,7 @@ export default function CardContainer({
   const [moveToNextQuestion, setMoveToNextQuestion] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [animateIn, setAnimateIn] = useState(false);
+  const [canClickStopButton, setCanClickStopButton] = useState(true);
 
   const currentCard = cards[currentIndex];
 
@@ -88,11 +89,32 @@ export default function CardContainer({
         }`}
     >
       <button
-        onClick={() => {
+        disabled={!canClickStopButton}
+        onClick={async () => {
+          const MAX_CARDS_TO_ADD_TO_REMAINING = 10;
+          const MIN_CARDS_COMPLETED_TO_ADD_TO_REMAINING = 5;
+
+          if (currentIndex > MIN_CARDS_COMPLETED_TO_ADD_TO_REMAINING) {
+            const remainingCards = cards.slice(currentIndex);
+
+            let counter = 0;
+
+            for (const card of remainingCards) {
+              // Only mark if not already incorrect
+              if (!card.incorrect && counter < MAX_CARDS_TO_ADD_TO_REMAINING) {
+                counter++;
+                setCanClickStopButton(false);
+                await handleIncorrect(card);
+              }
+            }
+            setCanClickStopButton(true);
+          }
+
+          // Stop the game and show modal
           setPlaying(false);
           openScoreModal();
         }}
-        className="btn btn-incorrect my-2"
+        className="btn btn-incorrect my-2 disabled:cursor-not-allowed"
       >
         Stop
       </button>
