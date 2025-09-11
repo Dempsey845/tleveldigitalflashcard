@@ -8,31 +8,40 @@ export default function Card({
   setFlipped,
   moveToNextQuestion,
   setMoveToNextQuestion,
-  nextQuestion,
+  resetTrigger,
 }) {
   const cardRef = useRef(null);
 
+  // Reset on game start/restart
   useEffect(() => {
-    if (moveToNextQuestion && cardRef.current) {
-      cardRef.current.classList.add("move-up");
+    if (resetTrigger && cardRef.current) {
+      cardRef.current.classList.remove("flipped", "move-up", "move-down");
+      setFlipped(false);
+    }
+  }, [resetTrigger, setFlipped]);
 
-      const timeout = setTimeout(() => {
-        cardRef.current.classList.remove("flipped");
-        cardRef.current.classList.remove("move-up");
+  // Trigger animations when moving to next question
+  useEffect(() => {
+    const card = cardRef.current;
+    if (!moveToNextQuestion || !card) return;
 
-        cardRef.current.classList.add("move-down");
+    card.classList.add("move-up");
 
-        nextQuestion();
+    const timeout = setTimeout(() => {
+      card.classList.remove("flipped", "move-up");
+      card.classList.add("move-down");
 
-        setTimeout(() => {
-          cardRef.current.classList.remove("move-down");
-          setMoveToNextQuestion(false);
-        }, 500);
+      // Only signal that the animation is finished
+      const innerTimeout = setTimeout(() => {
+        card.classList.remove("move-down");
+        setMoveToNextQuestion(false);
       }, 500);
 
-      return () => clearTimeout(timeout);
-    }
-  }, [moveToNextQuestion]);
+      return () => clearTimeout(innerTimeout);
+    }, 500);
+
+    return () => clearTimeout(timeout);
+  }, [moveToNextQuestion, setMoveToNextQuestion]);
 
   return (
     <div

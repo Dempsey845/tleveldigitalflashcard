@@ -3,20 +3,23 @@ import Card from "./Card";
 
 export default function CardContainer({
   cards,
-  currentIndex, // current card index
-  nextQuestion,
+  currentIndex,
+  setCurrentIndex,
   playing,
   setPlaying,
+  handleIncorrect,
+  handleCorrect,
+  resetTrigger,
 }) {
   const [flipped, setFlipped] = useState(false);
   const [moveToNextQuestion, setMoveToNextQuestion] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [animateIn, setAnimateIn] = useState(false);
 
+  // Mount/unmount effect
   useEffect(() => {
     if (playing) {
       setMounted(true);
-      // allow a tick for the element to mount before animating in
       const tick = setTimeout(() => setAnimateIn(true), 10);
       return () => clearTimeout(tick);
     } else {
@@ -26,9 +29,29 @@ export default function CardContainer({
     }
   }, [playing]);
 
-  if (!mounted || cards.length === 0) return null;
+  // Move to next card after animation
+  useEffect(() => {
+    if (!moveToNextQuestion) return;
+    const timer = setTimeout(() => {
+      setCurrentIndex((prev) => {
+        const next = prev + 1;
+        if (next >= cards.length) {
+          setPlaying(false);
+          return 0;
+        }
+        return next;
+      });
+      setFlipped(false);
+      setMoveToNextQuestion(false);
+    }, 1000); // match animation duration
+    return () => clearTimeout(timer);
+  }, [moveToNextQuestion, cards.length, setCurrentIndex, setPlaying]);
 
+  // Always render hooks first
   const currentCard = cards[currentIndex];
+
+  // Return null safely if nothing to show
+  if (!mounted || !currentCard) return null;
 
   return (
     <div
@@ -45,7 +68,7 @@ export default function CardContainer({
         setFlipped={setFlipped}
         moveToNextQuestion={moveToNextQuestion}
         setMoveToNextQuestion={setMoveToNextQuestion}
-        nextQuestion={nextQuestion}
+        resetTrigger={resetTrigger}
       />
 
       <div
@@ -55,8 +78,8 @@ export default function CardContainer({
       >
         <button
           onClick={() => {
+            handleCorrect();
             setMoveToNextQuestion(true);
-            setFlipped(false);
           }}
           className="btn btn-correct flex-shrink-0"
         >
@@ -67,7 +90,15 @@ export default function CardContainer({
           Was your answer correct?
         </p>
 
-        <button className="btn btn-incorrect flex-shrink-0">Incorrect</button>
+        <button
+          onClick={() => {
+            handleIncorrect();
+            setMoveToNextQuestion(true);
+          }}
+          className="btn btn-incorrect flex-shrink-0"
+        >
+          Incorrect
+        </button>
       </div>
 
       <button

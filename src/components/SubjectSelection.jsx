@@ -6,6 +6,7 @@ export default function SubjectSelection({
   setSubjects,
   playing,
   setPlaying,
+  startGame,
 }) {
   const [showPlayButton, setShowPlayButton] = useState(false);
   const [fadeIn, setFadeIn] = useState(false);
@@ -49,7 +50,10 @@ export default function SubjectSelection({
 
       {showPlayButton && (
         <button
-          onClick={() => setPlaying(true)}
+          onClick={() => {
+            startGame();
+            setPlaying(true);
+          }}
           className={`btn btn-correct my-10 transition-opacity duration-500 ${
             fadeIn ? "opacity-100" : "opacity-0"
           }`}

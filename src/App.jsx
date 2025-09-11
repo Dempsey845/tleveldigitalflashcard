@@ -6,15 +6,21 @@ import { useCards } from "./hooks/useCards";
 
 function App() {
   const { user } = useAuth();
+  const userId = user?.uid;
   const {
     subjects,
     setSubjects,
     selectedCards,
     currentIndex,
+    setCurrentIndex,
     playing,
     setPlaying,
     nextQuestion,
-  } = useCards();
+    handleIncorrect,
+    handleCorrect,
+    startGame,
+    resetTrigger,
+  } = useCards(userId);
 
   return (
     <>
@@ -36,13 +42,18 @@ function App() {
             setSubjects={setSubjects}
             playing={playing}
             setPlaying={setPlaying}
+            startGame={startGame}
           />
           <CardContainer
             cards={selectedCards}
             currentIndex={currentIndex}
+            setCurrentIndex={setCurrentIndex}
             nextQuestion={nextQuestion}
             playing={playing}
             setPlaying={setPlaying}
+            handleIncorrect={handleIncorrect}
+            handleCorrect={handleCorrect}
+            resetTrigger={resetTrigger}
           />
         </>
       ) : (
