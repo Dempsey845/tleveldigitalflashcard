@@ -2,10 +2,8 @@ import { useState, useEffect } from "react";
 import Card from "./Card";
 
 export default function CardContainer({
-  questions,
-  question,
-  answers,
-  answer,
+  cards,
+  currentIndex, // current card index
   nextQuestion,
   playing,
   setPlaying,
@@ -28,7 +26,9 @@ export default function CardContainer({
     }
   }, [playing]);
 
-  if (!mounted) return null;
+  if (!mounted || cards.length === 0) return null;
+
+  const currentCard = cards[currentIndex];
 
   return (
     <div
@@ -39,8 +39,8 @@ export default function CardContainer({
         }`}
     >
       <Card
-        question={questions[question]}
-        answer={answers[answer]}
+        question={currentCard.question}
+        answer={currentCard.answer}
         flipped={flipped}
         setFlipped={setFlipped}
         moveToNextQuestion={moveToNextQuestion}
