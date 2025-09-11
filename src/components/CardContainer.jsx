@@ -10,11 +10,16 @@ export default function CardContainer({
   handleIncorrect,
   handleCorrect,
   resetTrigger,
+  setScoreBySubject,
+  setTotalScore,
+  openScoreModal,
 }) {
   const [flipped, setFlipped] = useState(false);
   const [moveToNextQuestion, setMoveToNextQuestion] = useState(false);
   const [mounted, setMounted] = useState(false);
   const [animateIn, setAnimateIn] = useState(false);
+
+  const currentCard = cards[currentIndex];
 
   // Mount/unmount effect
   useEffect(() => {
@@ -32,26 +37,47 @@ export default function CardContainer({
   // Move to next card after animation
   useEffect(() => {
     if (!moveToNextQuestion) return;
+
     const timer = setTimeout(() => {
       setCurrentIndex((prev) => {
         const next = prev + 1;
+
         if (next >= cards.length) {
           setPlaying(false);
-          return 0;
+          return prev; // keep last index to show final card if needed
         }
+
         return next;
       });
+
       setFlipped(false);
       setMoveToNextQuestion(false);
-    }, 1000); // match animation duration
+    }, 1000);
+
     return () => clearTimeout(timer);
   }, [moveToNextQuestion, cards.length, setCurrentIndex, setPlaying]);
 
-  // Always render hooks first
-  const currentCard = cards[currentIndex];
-
-  // Return null safely if nothing to show
   if (!mounted || !currentCard) return null;
+
+  const updateScores = (isCorrect) => {
+    const subject = currentCard.subject;
+    console.log("Current card:", currentCard);
+
+    // Update subject score
+    setScoreBySubject((prev) => ({
+      ...prev,
+      [subject]: {
+        correct: (prev[subject]?.correct || 0) + (isCorrect ? 1 : 0),
+        total: (prev[subject]?.total || 0) + 1,
+      },
+    }));
+
+    // Update total score
+    setTotalScore((prev) => ({
+      correct: prev.correct + (isCorrect ? 1 : 0),
+      total: prev.total + 1,
+    }));
+  };
 
   return (
     <div
@@ -62,11 +88,15 @@ export default function CardContainer({
         }`}
     >
       <button
-        onClick={() => setPlaying(false)}
+        onClick={() => {
+          setPlaying(false);
+          openScoreModal();
+        }}
         className="btn btn-incorrect my-2"
       >
         Stop
       </button>
+
       <Card
         question={currentCard.question}
         answer={currentCard.answer}
@@ -77,6 +107,10 @@ export default function CardContainer({
         resetTrigger={resetTrigger}
       />
 
+      <p className="text-sm text-white mt-2">
+        Cards left: {cards.length - currentIndex - 1}
+      </p>
+
       <div
         className={`buttons flex items-center justify-center transition-opacity duration-300 ${
           flipped ? "opacity-100" : "opacity-0"
@@ -84,6 +118,7 @@ export default function CardContainer({
       >
         <button
           onClick={() => {
+            updateScores(true);
             handleCorrect();
             setMoveToNextQuestion(true);
           }}
@@ -98,6 +133,7 @@ export default function CardContainer({
 
         <button
           onClick={() => {
+            updateScores(false);
             handleIncorrect();
             setMoveToNextQuestion(true);
           }}

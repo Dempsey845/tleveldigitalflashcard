@@ -12,6 +12,7 @@ export function useCards(userId) {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [playing, setPlaying] = useState(false);
   const [resetTrigger, setResetTrigger] = useState(false);
+  const [hasPlayed, setHasPlayed] = useState(false);
 
   const [incorrectCardIds, setIncorrectCardIds] = useState([]);
 
@@ -36,6 +37,7 @@ export function useCards(userId) {
           question: card.question,
           answer: card.answer,
           incorrect: userIncorrectIds.includes(card.id),
+          subject: card.subject,
         });
         return acc;
       }, {});
@@ -52,10 +54,21 @@ export function useCards(userId) {
     loadCards();
   }, [userId]);
 
+  const shuffleArray = (array) => {
+    const arr = [...array];
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+    return arr;
+  };
+
   // Start the game
   const startGame = () => {
     const selectedSubjects = subjects.filter((subj) => subj.selected);
     let cards = selectedSubjects.flatMap((subj) => subj.cards);
+
+    setHasPlayed(true);
 
     // Remove duplicates
     const uniqueCardsMap = {};
@@ -64,17 +77,18 @@ export function useCards(userId) {
     });
     cards = Object.values(uniqueCardsMap);
 
-    // Sort incorrect cards first based on current state
-    cards.sort((a, b) => {
-      const aIncorrect = incorrectCardIds.includes(a.id);
-      const bIncorrect = incorrectCardIds.includes(b.id);
+    // Separate incorrect and correct cards
+    const incorrectCards = cards.filter((c) => incorrectCardIds.includes(c.id));
+    const correctCards = cards.filter((c) => !incorrectCardIds.includes(c.id));
 
-      if (aIncorrect && !bIncorrect) return -1;
-      if (!aIncorrect && bIncorrect) return 1;
-      return 0;
-    });
+    // Shuffle both groups independently if desired
+    const shuffledIncorrect = shuffleArray(incorrectCards);
+    const shuffledCorrect = shuffleArray(correctCards);
 
-    setSelectedCards(cards);
+    // Combine, putting incorrect cards first
+    const finalCards = [...shuffledIncorrect, ...shuffledCorrect];
+
+    setSelectedCards(finalCards);
     setCurrentIndex(0);
     setPlaying(true);
 
@@ -141,5 +155,6 @@ export function useCards(userId) {
     handleCorrect,
     startGame,
     resetTrigger,
+    hasPlayed,
   };
 }

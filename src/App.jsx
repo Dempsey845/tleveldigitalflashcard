@@ -2,6 +2,7 @@ import GoogleAuth from "./components/GoogleAuth";
 import SubjectSelection from "./components/SubjectSelection";
 import CardContainer from "./components/CardContainer";
 import PlayButton from "./components/PlayButton";
+import ScoreModal from "./components/ScoreModal";
 import { useAuth } from "./hooks/useAuth";
 import { useCards } from "./hooks/useCards";
 import logo from "./assets/logo.svg";
@@ -23,16 +24,36 @@ function App() {
     handleCorrect,
     startGame,
     resetTrigger,
+    hasPlayed,
   } = useCards(userId);
 
   const [hasSelection, setHasSelection] = useState(true);
   const [gameIsStarting, setGameIsStarting] = useState(false);
 
+  const [scoreBySubject, setScoreBySubject] = useState({});
+  const [totalScore, setTotalScore] = useState({ correct: 0, total: 0 });
+  const [showScoreModal, setShowScoreModal] = useState(false);
+
   useEffect(() => {
-    if (playing == false) {
+    if (playing == false && hasPlayed) {
       setGameIsStarting(false);
+      openScoreModal();
     }
-  }, [playing]);
+  }, [playing, hasPlayed]);
+
+  const openScoreModal = () => {
+    setShowScoreModal(true);
+  };
+
+  const clearScores = () => {
+    setScoreBySubject({});
+    setTotalScore({ correct: 0, total: 0 });
+  };
+
+  const closeScoreModal = () => {
+    setShowScoreModal(false);
+    clearScores();
+  };
 
   return (
     <div className="h-lvh flex flex-col items-center">
@@ -44,6 +65,13 @@ function App() {
       {/* Game content */}
       {user ? (
         <div className="flex flex-col justify-baseline items-center h-10/12">
+          {showScoreModal && (
+            <ScoreModal
+              scoreBySubject={scoreBySubject}
+              totalScore={totalScore}
+              onClose={() => closeScoreModal()}
+            />
+          )}
           <SubjectSelection
             subjects={subjects}
             setSubjects={setSubjects}
@@ -67,6 +95,9 @@ function App() {
             handleIncorrect={handleIncorrect}
             handleCorrect={handleCorrect}
             resetTrigger={resetTrigger}
+            setScoreBySubject={setScoreBySubject}
+            setTotalScore={setTotalScore}
+            openScoreModal={openScoreModal}
           />
         </div>
       ) : (
