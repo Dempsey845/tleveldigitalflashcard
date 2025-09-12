@@ -139,6 +139,7 @@ export default function CardContainer({
         }`}
       >
         <button
+          disabled={!flipped}
           onClick={() => {
             updateScores(true);
             handleCorrect();
@@ -154,6 +155,7 @@ export default function CardContainer({
         </p>
 
         <button
+          disabled={!flipped}
           onClick={() => {
             updateScores(false);
             handleIncorrect();
