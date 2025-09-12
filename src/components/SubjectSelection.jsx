@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import PlayButton from "./PlayButton";
 import "./SubjectSelection.css";
 
 export default function SubjectSelection({
@@ -11,7 +10,9 @@ export default function SubjectSelection({
   const [showContainer, setShowContainer] = useState(true);
   const [fadeIn, setFadeIn] = useState(false);
 
-  setHasSelection(subjects.some((s) => s.selected));
+  useEffect(() => {
+    setHasSelection(subjects.some((s) => s.selected));
+  }, [subjects, setHasSelection]);
 
   // Animate container when game starts / ends
   useEffect(() => {

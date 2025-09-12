@@ -7,10 +7,13 @@ import { useAuth } from "./hooks/useAuth";
 import { useCards } from "./hooks/useCards";
 import logo from "./assets/logo.svg";
 import { useEffect, useState } from "react";
+import { getScoreBySubjects } from "./lib/scores";
+import ScoreBySubjectDisplay from "./components/ScoreBySubjectDisplay";
 
 function App() {
   const { user } = useAuth();
   const userId = user?.uid;
+
   const {
     subjects,
     setSubjects,
@@ -35,7 +38,28 @@ function App() {
   const [showScoreModal, setShowScoreModal] = useState(false);
 
   useEffect(() => {
-    if (playing == false && hasPlayed) {
+    const fetchInitialScores = async () => {
+      if (!userId) return;
+      const scores = await getScoreBySubjects(userId);
+      if (scores) {
+        setScoreBySubject(scores);
+
+        const total = Object.values(scores).reduce(
+          (acc, subj) => ({
+            correct: acc.correct + subj.correct,
+            total: acc.total + subj.total,
+          }),
+          { correct: 0, total: 0 }
+        );
+        setTotalScore(total);
+      }
+    };
+
+    fetchInitialScores();
+  }, [userId]);
+
+  useEffect(() => {
+    if (playing === false && hasPlayed) {
       setGameIsStarting(false);
       openScoreModal();
     }
@@ -70,6 +94,7 @@ function App() {
               scoreBySubject={scoreBySubject}
               totalScore={totalScore}
               onClose={() => closeScoreModal()}
+              userId={userId}
             />
           )}
           <SubjectSelection
@@ -81,7 +106,10 @@ function App() {
           <PlayButton
             show={!playing}
             hasSelection={hasSelection}
-            startGame={startGame}
+            startGame={() => {
+              clearScores();
+              startGame();
+            }}
             setPlaying={setPlaying}
             setGameIsStarting={setGameIsStarting}
           />
@@ -99,6 +127,7 @@ function App() {
             setTotalScore={setTotalScore}
             openScoreModal={openScoreModal}
           />
+          <ScoreBySubjectDisplay userId={userId} updateOn={showScoreModal} />
         </div>
       ) : (
         <p className="p-6 text-center text-red-500">

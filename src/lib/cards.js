@@ -37,7 +37,6 @@ export async function markCardCorrect(userId, cardId) {
 
   try {
     await deleteDoc(cardRef);
-    console.log(`Card ${cardId} removed from incorrect cards.`);
   } catch (error) {
     console.error("Error removing card from incorrect:", error);
   }

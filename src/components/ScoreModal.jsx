@@ -1,4 +1,22 @@
-export default function ScoreModal({ scoreBySubject, totalScore, onClose }) {
+import { useEffect } from "react";
+import { addScoreBySubjects } from "../lib/scores";
+
+export default function ScoreModal({
+  scoreBySubject,
+  totalScore,
+  onClose,
+  userId,
+}) {
+  useEffect(() => {
+    if (!userId || !scoreBySubject) return;
+
+    const saveScores = async () => {
+      await addScoreBySubjects(userId, scoreBySubject);
+    };
+
+    saveScores();
+  }, [userId, scoreBySubject]);
+
   return (
     <div className="fixed inset-0 flex items-center justify-center bg-black/80 z-50">
       <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center text-black">
