@@ -9,6 +9,7 @@ import logo from "./assets/logo.svg";
 import { useEffect, useState } from "react";
 import { getScoreBySubjects } from "./lib/scores";
 import ScoreBySubjectDisplay from "./components/ScoreBySubjectDisplay";
+import IncorrectGameMode from "./components/IncorrectGameMode";
 
 function App() {
   const { user } = useAuth();
@@ -148,6 +149,10 @@ function App() {
           <div className="w-full">
             <ScoreBySubjectDisplay userId={userId} updateOn={showScoreModal} />
           </div>
+
+          <hr></hr>
+
+          <IncorrectGameMode userId={userId} />
         </main>
       ) : (
         <p className="p-6 text-center text-red-500">
