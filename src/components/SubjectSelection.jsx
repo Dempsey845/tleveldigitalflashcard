@@ -28,6 +28,11 @@ export default function SubjectSelection({
 
   if (!showContainer) return null;
 
+  // Sort subjects alphabetically
+  const sortedSubjects = [...subjects].sort((a, b) =>
+    a.subject.localeCompare(b.subject)
+  );
+
   return (
     <div
       className={`subject-selection-container transition-all duration-500 ease-in-out transform origin-top ${
@@ -36,14 +41,16 @@ export default function SubjectSelection({
     >
       <h2 className="subject-selection-title">Select Your Subjects</h2>
       <div className="subject-list">
-        {subjects.map((subject, index) => (
+        {sortedSubjects.map((subject, index) => (
           <button
             disabled={gameIsStarting}
             className={`subject ${subject.selected ? "subject-selected" : ""}`}
             onClick={() =>
               setSubjects((prev) =>
-                prev.map((s, i) =>
-                  i === index ? { ...s, selected: !s.selected } : s
+                prev.map((s) =>
+                  s.subject === subject.subject
+                    ? { ...s, selected: !s.selected }
+                    : s
                 )
               )
             }

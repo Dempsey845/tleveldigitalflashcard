@@ -32,7 +32,6 @@ function App() {
 
   const [hasSelection, setHasSelection] = useState(true);
   const [gameIsStarting, setGameIsStarting] = useState(false);
-
   const [scoreBySubject, setScoreBySubject] = useState({});
   const [totalScore, setTotalScore] = useState({ correct: 0, total: 0 });
   const [showScoreModal, setShowScoreModal] = useState(false);
@@ -54,7 +53,6 @@ function App() {
         setTotalScore(total);
       }
     };
-
     fetchInitialScores();
   }, [userId]);
 
@@ -65,87 +63,99 @@ function App() {
     }
   }, [playing, hasPlayed]);
 
-  const openScoreModal = () => {
-    setShowScoreModal(true);
-  };
-
+  const openScoreModal = () => setShowScoreModal(true);
   const clearScores = () => {
     setScoreBySubject({});
     setTotalScore({ correct: 0, total: 0 });
   };
-
   const closeScoreModal = () => {
     setShowScoreModal(false);
     clearScores();
   };
 
   return (
-    <div className="h-lvh flex flex-col items-center">
+    <div className="min-h-screen flex flex-col items-center">
       {/* Logo */}
-      <div>
-        <img src={logo} alt="Game Logo" className="w-64 sm:w-40 md:w-80" />
-      </div>
+      <header className="py-6">
+        <img
+          src={logo}
+          alt="Game Logo"
+          className="mx-auto w-56 sm:w-64 md:w-96 lg:w-[28rem] transition-all duration-500 ease-in-out"
+        />
+      </header>
 
-      {/* Game content */}
+      {/* Main Game Area */}
       {user ? (
-        <div className="flex flex-col justify-baseline items-center h-10/12">
+        <main className="flex flex-col flex-1 w-full max-w-3xl px-4 sm:px-6 md:px-8 gap-6">
           {showScoreModal && (
             <ScoreModal
               scoreBySubject={scoreBySubject}
               totalScore={totalScore}
-              onClose={() => closeScoreModal()}
+              onClose={closeScoreModal}
               userId={userId}
             />
           )}
-          <SubjectSelection
-            subjects={subjects}
-            setSubjects={setSubjects}
-            setHasSelection={setHasSelection}
-            gameIsStarting={gameIsStarting}
-          />
-          <PlayButton
-            show={!playing}
-            hasSelection={hasSelection}
-            startGame={() => {
-              clearScores();
-              startGame();
-            }}
-            setPlaying={setPlaying}
-            setGameIsStarting={setGameIsStarting}
-          />
-          <CardContainer
-            cards={selectedCards}
-            currentIndex={currentIndex}
-            setCurrentIndex={setCurrentIndex}
-            nextQuestion={nextQuestion}
-            playing={playing}
-            setPlaying={setPlaying}
-            handleIncorrect={handleIncorrect}
-            handleCorrect={handleCorrect}
-            resetTrigger={resetTrigger}
-            setScoreBySubject={setScoreBySubject}
-            setTotalScore={setTotalScore}
-            openScoreModal={openScoreModal}
-          />
-          <ScoreBySubjectDisplay userId={userId} updateOn={showScoreModal} />
-        </div>
+
+          {/* Selection + Play Button */}
+          <div className="flex flex-col md:justify-between items-center gap-4">
+            <SubjectSelection
+              subjects={subjects}
+              setSubjects={setSubjects}
+              setHasSelection={setHasSelection}
+              gameIsStarting={gameIsStarting}
+            />
+            <PlayButton
+              show={!playing}
+              hasSelection={hasSelection}
+              startGame={() => {
+                clearScores();
+                startGame();
+              }}
+              setPlaying={setPlaying}
+              setGameIsStarting={setGameIsStarting}
+            />
+          </div>
+
+          {/* Card Container */}
+          <div className="flex-1 w-full overflow-y-auto">
+            <CardContainer
+              cards={selectedCards}
+              currentIndex={currentIndex}
+              setCurrentIndex={setCurrentIndex}
+              nextQuestion={nextQuestion}
+              playing={playing}
+              setPlaying={setPlaying}
+              handleIncorrect={handleIncorrect}
+              handleCorrect={handleCorrect}
+              resetTrigger={resetTrigger}
+              setScoreBySubject={setScoreBySubject}
+              setTotalScore={setTotalScore}
+              openScoreModal={openScoreModal}
+            />
+          </div>
+
+          {/* Scores Display */}
+          <div className="w-full">
+            <ScoreBySubjectDisplay userId={userId} updateOn={showScoreModal} />
+          </div>
+        </main>
       ) : (
         <p className="p-6 text-center text-red-500">
           Please sign in to play the game.
         </p>
       )}
 
-      {/* Google auth */}
-      <div className="p-6 flex flex-col w-full justify-center items-center">
+      {/* Footer / Google Auth */}
+      <footer className="p-6 flex flex-col items-center w-full shadow-inner">
         <GoogleAuth />
         {user ? (
-          <p className="mt-4">
+          <p className="mt-4 text-center">
             Signed in as {user.displayName} ({user.email})
           </p>
         ) : (
-          <p className="mt-4">Not signed in</p>
+          <p className="mt-4 text-center">Not signed in</p>
         )}
-      </div>
+      </footer>
     </div>
   );
 }

@@ -82,12 +82,10 @@ export default function CardContainer({
 
   return (
     <div
-      className={`flex flex-col gap-5 items-center justify-center m-3
-        transition-all duration-500
-        ${
-          animateIn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
-        }`}
+      className={`flex flex-col items-center justify-center m-2 sm:m-3 transition-all duration-500
+      ${animateIn ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
     >
+      {/* Stop Button */}
       <button
         disabled={!canClickStopButton}
         onClick={async () => {
@@ -96,11 +94,8 @@ export default function CardContainer({
 
           if (currentIndex > MIN_CARDS_COMPLETED_TO_ADD_TO_REMAINING) {
             const remainingCards = cards.slice(currentIndex);
-
             let counter = 0;
-
             for (const card of remainingCards) {
-              // Only mark if not already incorrect
               if (!card.incorrect && counter < MAX_CARDS_TO_ADD_TO_REMAINING) {
                 counter++;
                 setCanClickStopButton(false);
@@ -110,15 +105,15 @@ export default function CardContainer({
             setCanClickStopButton(true);
           }
 
-          // Stop the game and show modal
           setPlaying(false);
           openScoreModal();
         }}
-        className="btn btn-incorrect my-2 disabled:cursor-not-allowed"
+        className="btn btn-incorrect my-2 disabled:cursor-not-allowed w-40 sm:w-48 md:w-56 text-sm sm:text-base md:text-lg"
       >
         Stop
       </button>
 
+      {/* Card */}
       <Card
         question={currentCard.question}
         answer={currentCard.answer}
@@ -129,12 +124,14 @@ export default function CardContainer({
         resetTrigger={resetTrigger}
       />
 
-      <p className="text-sm text-white mt-2">
+      {/* Cards left */}
+      <p className="text-xs sm:text-sm md:text-base text-white mt-2">
         Cards left: {cards.length - currentIndex - 1}
       </p>
 
+      {/* Correct / Incorrect Buttons */}
       <div
-        className={`buttons flex items-center justify-center transition-opacity duration-300 ${
+        className={`buttons flex flex-row items-center justify-center mt-2 gap-2 sm:gap-4 transition-opacity duration-300 ${
           flipped ? "opacity-100" : "opacity-0"
         }`}
       >
@@ -145,12 +142,12 @@ export default function CardContainer({
             handleCorrect();
             setMoveToNextQuestion(true);
           }}
-          className="btn btn-correct flex-shrink-0"
+          className="btn btn-correct w-32 sm:w-40 text-sm sm:text-base md:text-lg"
         >
           Correct
         </button>
 
-        <p className="mx-2 select-none flex-shrink text-center">
+        <p className="hidden sm:block mx-2 text-center select-none text-sm sm:text-base">
           Was your answer correct?
         </p>
 
@@ -161,7 +158,7 @@ export default function CardContainer({
             handleIncorrect();
             setMoveToNextQuestion(true);
           }}
-          className="btn btn-incorrect flex-shrink-0"
+          className="btn btn-incorrect w-32 sm:w-40 text-sm sm:text-base md:text-lg"
         >
           Incorrect
         </button>
