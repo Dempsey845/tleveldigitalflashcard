@@ -13,6 +13,7 @@ export default function CardContainer({
   setScoreBySubject,
   setTotalScore,
   openScoreModal,
+  totalCardsBySubject,
 }) {
   const [flipped, setFlipped] = useState(false);
   const [moveToNextQuestion, setMoveToNextQuestion] = useState(false);
@@ -62,22 +63,28 @@ export default function CardContainer({
 
   const updateScores = (isCorrect) => {
     const subject = currentCard.subject;
-    console.log("Current card:", currentCard);
 
-    // Update subject score
     setScoreBySubject((prev) => ({
       ...prev,
       [subject]: {
         correct: (prev[subject]?.correct || 0) + (isCorrect ? 1 : 0),
-        total: (prev[subject]?.total || 0) + 1,
+        total: totalCardsBySubject[subject] || 0,
       },
     }));
 
-    // Update total score
-    setTotalScore((prev) => ({
-      correct: prev.correct + (isCorrect ? 1 : 0),
-      total: prev.total + 1,
-    }));
+    setTotalScore((prev) => {
+      const newCorrect = prev.correct + (isCorrect ? 1 : 0);
+
+      const newTotal = Object.values(totalCardsBySubject).reduce(
+        (acc, count) => acc + count,
+        0
+      );
+
+      return {
+        correct: newCorrect,
+        total: newTotal,
+      };
+    });
   };
 
   return (

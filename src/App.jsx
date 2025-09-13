@@ -35,6 +35,15 @@ function App() {
   const [scoreBySubject, setScoreBySubject] = useState({});
   const [totalScore, setTotalScore] = useState({ correct: 0, total: 0 });
   const [showScoreModal, setShowScoreModal] = useState(false);
+  const [totalCardsBySubject, setTotalCardsBySubject] = useState({});
+
+  useEffect(() => {
+    const totals = selectedCards.reduce((acc, card) => {
+      acc[card.subject] = (acc[card.subject] || 0) + 1;
+      return acc;
+    }, {});
+    setTotalCardsBySubject(totals);
+  }, [selectedCards]);
 
   useEffect(() => {
     const fetchInitialScores = async () => {
@@ -131,6 +140,7 @@ function App() {
               setScoreBySubject={setScoreBySubject}
               setTotalScore={setTotalScore}
               openScoreModal={openScoreModal}
+              totalCardsBySubject={totalCardsBySubject}
             />
           </div>
 
