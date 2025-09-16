@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import { getScoreBySubjects } from "../lib/scores";
 
+import "./styles/ScoreBySubjectDisplay.css";
+
 export default function ScoreBySubjectDisplay({ userId, updateOn }) {
   const [scoresBySubject, setScoresBySubject] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -21,15 +23,11 @@ export default function ScoreBySubjectDisplay({ userId, updateOn }) {
   }, [userId, updateOn]);
 
   if (loading) {
-    return (
-      <p className="text-gray-400 text-center mt-4 animate-pulse">
-        Loading scores...
-      </p>
-    );
+    return <p className="loading-text alert-text">Loading scores...</p>;
   }
 
   if (!scoresBySubject) {
-    return <p className="text-gray-400 text-center mt-4">No scores yet.</p>;
+    return <p className="alert-text">No scores yet.</p>;
   }
 
   // Sort subjects by score (lowest to highest)
@@ -38,10 +36,8 @@ export default function ScoreBySubjectDisplay({ userId, updateOn }) {
   );
 
   return (
-    <div className="max-w-md md:max-w-4xl mx-auto mt-6">
-      <h2 className="text-2xl font-bold text-center text-blue-700 mb-4 animate-fade-in">
-        Your Scores by Subject
-      </h2>
+    <div className="scores-container">
+      <h2 className="animate-fade-in">Your Scores by Subject</h2>
 
       <div className="space-y-3 md:space-y-0 md:grid md:grid-cols-2 lg:grid-cols-3 gap-4 max-h-64 overflow-y-auto">
         {sortedSubjects.map(([subject, { correct, total }]) => (

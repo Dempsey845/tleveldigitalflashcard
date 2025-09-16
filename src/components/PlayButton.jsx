@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import "./styles/PlayButton.css";
 
 export default function PlayButton({
   hasSelection,
@@ -10,6 +11,7 @@ export default function PlayButton({
   const [fadeIn, setFadeIn] = useState(false);
   const [visible, setVisible] = useState(false);
 
+  // Handle fade animation
   useEffect(() => {
     let timeout;
     if (show) {
@@ -39,20 +41,15 @@ export default function PlayButton({
 
   return (
     <div
-      className={`w-full flex justify-center overflow-hidden transition-[max-height] duration-500 ease-in-out`}
+      className="btn-container"
       style={{ maxHeight: fadeIn ? "150px" : "0px" }}
     >
       <button
         onClick={handleClick}
         disabled={!hasSelection}
-        className={`btn btn-correct my-6 transition-all duration-500
-          ${
-            fadeIn
-              ? "opacity-100 scale-100 translate-y-0"
-              : "opacity-0 scale-90 -translate-y-4"
-          }
-          ${!hasSelection ? "opacity-50 cursor-not-allowed" : ""}
-          text-lg md:text-2xl px-6 md:px-12 py-3 md:py-6
+        className={`btn-play
+          ${fadeIn ? "btn-no-fade" : "btn-fade"}
+          ${!hasSelection && "btn-disabled"}
         `}
       >
         Play

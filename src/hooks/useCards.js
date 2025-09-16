@@ -81,7 +81,7 @@ export function useCards(userId) {
     const incorrectCards = cards.filter((c) => incorrectCardIds.includes(c.id));
     const correctCards = cards.filter((c) => !incorrectCardIds.includes(c.id));
 
-    // Shuffle both groups independently if desired
+    // Shuffle both groups independently
     const shuffledIncorrect = shuffleArray(incorrectCards);
     const shuffledCorrect = shuffleArray(correctCards);
 

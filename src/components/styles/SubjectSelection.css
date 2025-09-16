@@ -3,7 +3,7 @@
 @layer base {
   /* Container */
   .subject-selection-container {
-    @apply flex flex-col items-center justify-center px-4 py-6 gap-4 bg-white/20 rounded-xl shadow-lg backdrop-blur-md;
+    @apply flex flex-col items-center justify-center px-4 py-6 gap-4 bg-white/20 rounded-xl shadow-lg backdrop-blur-md transition-all duration-500 ease-in-out transform origin-top;
   }
 
   /* Title */

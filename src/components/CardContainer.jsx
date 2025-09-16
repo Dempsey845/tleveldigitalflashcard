@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import Card from "./Card";
+import "./styles/CardContainer.css";
 
 export default function CardContainer({
   cards,
@@ -46,7 +47,7 @@ export default function CardContainer({
 
         if (next >= cards.length) {
           setPlaying(false);
-          return prev; // keep last index to show final card if needed
+          return prev; // keep last index to show final card
         }
 
         return next;
@@ -87,6 +88,28 @@ export default function CardContainer({
     });
   };
 
+  const handleStop = async () => {
+    const MAX_CARDS_TO_ADD_TO_REMAINING = 10; // The max amount of cards to add to incorrect cards (for next play through)
+    const MIN_CARDS_COMPLETED_TO_ADD_TO_REMAINING = 5; // The min amount of cards already played for remainding cards to be added to incorrect
+
+    // Add remainding cards to incorrect cards
+    if (currentIndex > MIN_CARDS_COMPLETED_TO_ADD_TO_REMAINING) {
+      const remainingCards = cards.slice(currentIndex);
+      let counter = 0;
+      for (const card of remainingCards) {
+        if (!card.incorrect && counter < MAX_CARDS_TO_ADD_TO_REMAINING) {
+          counter++;
+          setCanClickStopButton(false);
+          await handleIncorrect(card);
+        }
+      }
+      setCanClickStopButton(true);
+    }
+
+    setPlaying(false);
+    openScoreModal();
+  };
+
   return (
     <div
       className={`flex flex-col items-center justify-center m-2 sm:m-3 transition-all duration-500
@@ -95,27 +118,8 @@ export default function CardContainer({
       {/* Stop Button */}
       <button
         disabled={!canClickStopButton}
-        onClick={async () => {
-          const MAX_CARDS_TO_ADD_TO_REMAINING = 10;
-          const MIN_CARDS_COMPLETED_TO_ADD_TO_REMAINING = 5;
-
-          if (currentIndex > MIN_CARDS_COMPLETED_TO_ADD_TO_REMAINING) {
-            const remainingCards = cards.slice(currentIndex);
-            let counter = 0;
-            for (const card of remainingCards) {
-              if (!card.incorrect && counter < MAX_CARDS_TO_ADD_TO_REMAINING) {
-                counter++;
-                setCanClickStopButton(false);
-                await handleIncorrect(card);
-              }
-            }
-            setCanClickStopButton(true);
-          }
-
-          setPlaying(false);
-          openScoreModal();
-        }}
-        className="btn btn-incorrect my-2 disabled:cursor-not-allowed w-40 sm:w-48 md:w-56 text-sm sm:text-base md:text-lg"
+        onClick={async () => await handleStop()}
+        className="btn btn-incorrect btn-stop"
       >
         Stop
       </button>
@@ -132,15 +136,13 @@ export default function CardContainer({
       />
 
       {/* Cards left */}
-      <p className="text-xs sm:text-sm md:text-base text-white mt-2">
+      <p className="cards-left">
         Cards left: {cards.length - currentIndex - 1}
       </p>
 
       {/* Correct / Incorrect Buttons */}
       <div
-        className={`buttons flex flex-row items-center justify-center mt-2 gap-2 sm:gap-4 transition-opacity duration-300 ${
-          flipped ? "opacity-100" : "opacity-0"
-        }`}
+        className={`buttons-container ${flipped ? "opacity-100" : "opacity-0"}`}
       >
         <button
           disabled={!flipped}
@@ -149,14 +151,12 @@ export default function CardContainer({
             handleCorrect();
             setMoveToNextQuestion(true);
           }}
-          className="btn btn-correct w-32 sm:w-40 text-sm sm:text-base md:text-lg"
+          className="btn btn-correct"
         >
           Correct
         </button>
 
-        <p className="hidden sm:block mx-2 text-center select-none text-sm sm:text-base">
-          Was your answer correct?
-        </p>
+        <p className="prompt">Was your answer correct?</p>
 
         <button
           disabled={!flipped}
@@ -165,7 +165,7 @@ export default function CardContainer({
             handleIncorrect();
             setMoveToNextQuestion(true);
           }}
-          className="btn btn-incorrect w-32 sm:w-40 text-sm sm:text-base md:text-lg"
+          className="btn btn-incorrect"
         >
           Incorrect
         </button>

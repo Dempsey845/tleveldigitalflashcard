@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./SubjectSelection.css";
+import "./styles/SubjectSelection.css";
 
 export default function SubjectSelection({
   subjects,
@@ -33,27 +33,27 @@ export default function SubjectSelection({
     a.subject.localeCompare(b.subject)
   );
 
+  const handleSubjectClick = (subject) => {
+    setSubjects((prev) =>
+      prev.map((s) =>
+        s.subject === subject.subject ? { ...s, selected: !s.selected } : s
+      )
+    );
+  };
+
   return (
     <div
-      className={`subject-selection-container transition-all duration-500 ease-in-out transform origin-top ${
+      className={`subject-selection-container ${
         fadeIn ? "opacity-100 scale-100" : "opacity-0 scale-95"
       }`}
     >
       <h2 className="subject-selection-title">Select Your Subjects</h2>
       <div className="subject-list">
-        {sortedSubjects.map((subject, index) => (
+        {sortedSubjects.map((subject) => (
           <button
             disabled={gameIsStarting}
             className={`subject ${subject.selected ? "subject-selected" : ""}`}
-            onClick={() =>
-              setSubjects((prev) =>
-                prev.map((s) =>
-                  s.subject === subject.subject
-                    ? { ...s, selected: !s.selected }
-                    : s
-                )
-              )
-            }
+            onClick={() => handleSubjectClick(subject)}
             key={subject.subject}
           >
             {subject.subject}

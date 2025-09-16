@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import "./Card.css";
+import "./styles/Card.css";
 
 export default function Card({
   question,

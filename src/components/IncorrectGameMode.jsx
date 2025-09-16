@@ -7,6 +7,8 @@ import {
 } from "../lib/cards";
 import Card from "./Card";
 
+import "./styles/IncorrectGameMode.css";
+
 export default function IncorrectGameMode({ userId }) {
   const [allCards, setAllCards] = useState(null);
   const [cards, setCards] = useState([]);
@@ -22,7 +24,6 @@ export default function IncorrectGameMode({ userId }) {
   const [startScreenVisible, setStartScreenVisible] = useState(true);
   const [gameOverVisible, setGameOverVisible] = useState(false);
 
-  // Fetch all cards and incorrect cards on mount
   useEffect(() => {
     const fetchCardsAndIncorrect = async () => {
       const fetchedCards = await fetchAllCards();
@@ -63,7 +64,7 @@ export default function IncorrectGameMode({ userId }) {
     markCardIncorrect(userId, cards[currentIndex].id);
 
   const handleNext = () => {
-    setCardVisible(false); // exit animation
+    setCardVisible(false);
     if (currentIndex < cards.length - 1) {
       setMoveToNextQuestion(true);
       setButtonEnabled(false);
@@ -86,7 +87,7 @@ export default function IncorrectGameMode({ userId }) {
     setStartScreenVisible(false);
     setTimeout(async () => {
       const count = await loadIncorrectCards();
-      if (count === 0) return; // no incorrect cards
+      if (count === 0) return;
       setGameStarted(true);
       setCardVisible(true);
     }, 400);
@@ -109,33 +110,17 @@ export default function IncorrectGameMode({ userId }) {
     }, 400);
   };
 
-  if (!allCards)
-    return <p className="text-center mt-8 text-gray-500">Loading cards...</p>;
+  if (!allCards) return <p className="loading">Loading cards...</p>;
 
   return (
-    <div
-      className={`game-container flex flex-col items-center justify-center p-4 overflow-hidden transition-all duration-500`}
-    >
-      <h2 className="text-2xl sm:text-4xl font-bold mb-6 text-indigo-800">
-        Incorrect Cards
-      </h2>
+    <div className="game-container">
+      <h2 className="title">Incorrect Cards</h2>
 
       {/* Start Screen */}
       {!gameStarted && startScreenVisible && cards.length > 0 && (
-        <div
-          className={`flex flex-col items-center justify-center text-center transition-all duration-400 ${
-            startScreenVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 -translate-y-6"
-          }`}
-        >
-          <p className="text-lg text-gray-700 mb-6">
-            Ready to practise your incorrect cards?
-          </p>
-          <button
-            onClick={startGame}
-            className="px-6 py-2 rounded-2xl bg-indigo-500 hover:bg-indigo-600 active:scale-95 text-white font-semibold shadow-md transition-transform duration-200"
-          >
+        <div className={`start-screen ${startScreenVisible ? "show" : "hide"}`}>
+          <p className="description">Ready to practise your incorrect cards?</p>
+          <button onClick={startGame} className="btn primary">
             Start Game
           </button>
         </div>
@@ -143,23 +128,12 @@ export default function IncorrectGameMode({ userId }) {
 
       {/* Game Over Screen */}
       {gameOver && gameOverVisible && (
-        <div
-          className={`flex flex-col items-center justify-center text-center transition-all duration-400 ${
-            gameOverVisible
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 -translate-y-6"
-          }`}
-        >
-          <h3 className="text-3xl sm:text-4xl font-bold text-green-600 mb-4 animate-bounce">
-            🎉 Game Complete!
-          </h3>
-          <p className="text-lg text-gray-700 mb-6">
+        <div className={`game-over ${gameOverVisible ? "show" : "hide"}`}>
+          <h3 className="game-complete">🎉 Game Complete!</h3>
+          <p className="description">
             You’ve gone through all your incorrect cards.
           </p>
-          <button
-            onClick={restartGame}
-            className="px-6 py-2 rounded-2xl bg-indigo-500 hover:bg-indigo-600 active:scale-95 text-white font-semibold shadow-md transition-transform duration-200"
-          >
+          <button onClick={restartGame} className="btn primary">
             Restart
           </button>
         </div>
@@ -168,13 +142,7 @@ export default function IncorrectGameMode({ userId }) {
       {/* Game Active */}
       {gameStarted && !gameOver && cards.length > 0 && (
         <>
-          <div
-            className={`transition-all duration-400 ${
-              cardVisible
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-6"
-            }`}
-          >
+          <div className={`card-wrapper ${cardVisible ? "show" : "hide"}`}>
             <Card
               key={cards[currentIndex].id}
               question={cards[currentIndex].question}
@@ -187,24 +155,18 @@ export default function IncorrectGameMode({ userId }) {
             />
           </div>
 
-          <p className="mt-4 text-gray-600 text-sm sm:text-base">
+          <p className="progress">
             Card {currentIndex + 1} of {cards.length}
           </p>
 
-          <div
-            className={`flex flex-col sm:flex-row items-center justify-center mt-6 gap-4 transform transition-all duration-500 ${
-              flipped
-                ? "opacity-100 translate-y-0"
-                : "opacity-0 -translate-y-4 pointer-events-none"
-            }`}
-          >
+          <div className={`answer-buttons ${flipped ? "show" : "hide"}`}>
             <button
               disabled={!flipped || !buttonEnabled}
               onClick={() => {
                 handleCorrect();
                 handleNext();
               }}
-              className="px-6 py-2 rounded-2xl bg-green-500 hover:bg-green-600 active:scale-95 text-white font-semibold shadow-md transition-transform duration-200 w-36"
+              className="btn correct"
             >
               Correct
             </button>
@@ -215,7 +177,7 @@ export default function IncorrectGameMode({ userId }) {
                 handleInCorrect();
                 handleNext();
               }}
-              className="px-6 py-2 rounded-2xl bg-red-500 hover:bg-red-600 active:scale-95 text-white font-semibold shadow-md transition-transform duration-200 w-36"
+              className="btn incorrect"
             >
               Incorrect
             </button>
@@ -225,9 +187,7 @@ export default function IncorrectGameMode({ userId }) {
 
       {/* No incorrect cards */}
       {!gameStarted && cards.length === 0 && (
-        <p className="text-lg text-green-600 font-medium mt-6">
-          No incorrect cards found 🎉
-        </p>
+        <p className="no-cards">No incorrect cards found 🎉</p>
       )}
     </div>
   );

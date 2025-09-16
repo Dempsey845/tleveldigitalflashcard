@@ -1,0 +1,23 @@
+@import "tailwindcss";
+
+@layer base {
+  .btn-stop {
+    @apply my-2 disabled:cursor-not-allowed w-40 sm:w-48 md:w-56 text-sm sm:text-base md:text-lg;
+  }
+
+  .cards-left {
+    @apply text-xs sm:text-sm md:text-base text-white mt-2;
+  }
+
+  .buttons-container {
+    @apply flex flex-row items-center justify-center mt-2 gap-2 sm:gap-4 transition-opacity duration-300;
+  }
+
+  .buttons-container button {
+    @apply w-32 sm:w-40 text-sm sm:text-base md:text-lg;
+  }
+
+  .prompt {
+    @apply hidden sm:block mx-2 text-center select-none text-sm sm:text-base;
+  }
+}

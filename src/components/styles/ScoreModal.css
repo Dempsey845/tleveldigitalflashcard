@@ -1,0 +1,19 @@
+@import "tailwindcss";
+
+@layer base {
+  .modal-container {
+    @apply fixed inset-0 flex items-center justify-center bg-black/80 z-50;
+  }
+
+  .modal-card {
+    @apply bg-white p-6 rounded-lg shadow-lg w-80 text-center text-black;
+  }
+
+  .modal-card h2 {
+    @apply text-xl font-bold mb-4;
+  }
+
+  .modal-card p {
+    @apply font-semibold mb-4;
+  }
+}

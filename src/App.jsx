@@ -5,11 +5,12 @@ import PlayButton from "./components/PlayButton";
 import ScoreModal from "./components/ScoreModal";
 import { useAuth } from "./hooks/useAuth";
 import { useCards } from "./hooks/useCards";
-import logo from "./assets/logo.svg";
 import { useEffect, useState } from "react";
 import { getScoreBySubjects } from "./lib/scores";
 import ScoreBySubjectDisplay from "./components/ScoreBySubjectDisplay";
 import IncorrectGameMode from "./components/IncorrectGameMode";
+import Logo from "./components/Logo";
+import "./App.css";
 
 function App() {
   const { user } = useAuth();
@@ -38,6 +39,7 @@ function App() {
   const [showScoreModal, setShowScoreModal] = useState(false);
   const [totalCardsBySubject, setTotalCardsBySubject] = useState({});
 
+  // When selectedCards is modified, calculate the total amount of cards by subject
   useEffect(() => {
     const totals = selectedCards.reduce((acc, card) => {
       acc[card.subject] = (acc[card.subject] || 0) + 1;
@@ -46,6 +48,7 @@ function App() {
     setTotalCardsBySubject(totals);
   }, [selectedCards]);
 
+  // When user logs in, fetch the inital scores and store it in the scoreBySubject
   useEffect(() => {
     const fetchInitialScores = async () => {
       if (!userId) return;
@@ -66,6 +69,7 @@ function App() {
     fetchInitialScores();
   }, [userId]);
 
+  // Detect when the user finishes playing, show the score modal
   useEffect(() => {
     if (playing === false && hasPlayed) {
       setGameIsStarting(false);
@@ -84,19 +88,12 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen flex flex-col items-center">
-      {/* Logo */}
-      <header className="py-6">
-        <img
-          src={logo}
-          alt="Game Logo"
-          className="mx-auto w-56 sm:w-64 md:w-96 lg:w-[28rem] transition-all duration-500 ease-in-out"
-        />
-      </header>
+    <div className="app-container">
+      <Logo />
 
       {/* Main Game Area */}
       {user ? (
-        <main className="flex flex-col flex-1 w-full max-w-3xl px-4 sm:px-6 md:px-8 gap-6">
+        <main className="main-game-container">
           {showScoreModal && (
             <ScoreModal
               scoreBySubject={scoreBySubject}
@@ -107,7 +104,7 @@ function App() {
           )}
 
           {/* Selection + Play Button */}
-          <div className="flex flex-col md:justify-between items-center gap-4">
+          <div className="selection-container">
             <SubjectSelection
               subjects={subjects}
               setSubjects={setSubjects}
@@ -127,7 +124,7 @@ function App() {
           </div>
 
           {/* Card Container */}
-          <div className="flex-1 w-full overflow-y-auto">
+          <div className="card-container">
             <CardContainer
               cards={selectedCards}
               currentIndex={currentIndex}
@@ -155,20 +152,18 @@ function App() {
           <IncorrectGameMode userId={userId} />
         </main>
       ) : (
-        <p className="p-6 text-center text-red-500">
-          Please sign in to play the game.
-        </p>
+        <p className="warning-text">Please sign in to play the game.</p>
       )}
 
       {/* Footer / Google Auth */}
-      <footer className="p-6 flex flex-col items-center w-full shadow-inner">
+      <footer>
         <GoogleAuth />
         {user ? (
-          <p className="mt-4 text-center">
+          <p>
             Signed in as {user.displayName} ({user.email})
           </p>
         ) : (
-          <p className="mt-4 text-center">Not signed in</p>
+          <p>Not signed in</p>
         )}
       </footer>
     </div>

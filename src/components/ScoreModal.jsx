@@ -1,5 +1,6 @@
 import { useEffect } from "react";
 import { addScoreBySubjects } from "../lib/scores";
+import "./styles/ScoreModal.css";
 
 export default function ScoreModal({
   scoreBySubject,
@@ -7,6 +8,7 @@ export default function ScoreModal({
   onClose,
   userId,
 }) {
+  // If user changes/logs in or scoreBySubject is modifed, save SBS it to DB
   useEffect(() => {
     if (!userId || !scoreBySubject) return;
 
@@ -18,9 +20,9 @@ export default function ScoreModal({
   }, [userId, scoreBySubject]);
 
   return (
-    <div className="fixed inset-0 flex items-center justify-center bg-black/80 z-50">
-      <div className="bg-white p-6 rounded-lg shadow-lg w-80 text-center text-black">
-        <h2 className="text-xl font-bold mb-4">Game Over</h2>
+    <div className="modal-container">
+      <div className="modal-card">
+        <h2>Game Over</h2>
 
         <div className="mb-4">
           {Object.entries(scoreBySubject).map(([topic, score]) => (
@@ -30,7 +32,7 @@ export default function ScoreModal({
           ))}
         </div>
 
-        <p className="font-semibold mb-4">
+        <p>
           Total: {totalScore.correct}/{totalScore.total}
         </p>
 
